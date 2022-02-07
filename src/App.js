@@ -1,23 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import {useState} from 'react'
+import axios from 'axios'
 
 function App() {
+
+  const [username, setUsername] = useState('')
+  const [userData, setUserData] = useState([])
+  const [selectedData, setSelectedData] = useState({
+    name: '',
+    language	: '',
+    description: ''
+  })
+
+  const getRepoData = () => {
+    axios.get(`https://api.github.com/users/${username}/repos`)
+    .then(res => setUserData(res.data))
+    .catch(err => console.log(err))
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     Enter github username:
+     <input type='text' value={username} onChange={e => setUsername(e.target.value)} />
+     <button onClick={() => getRepoData()}>Submit</button><br />
+     {userData && userData.map((user) => setSelectedData(user))}
+     Repo Name: {selectedData.name}<br />
+     Language: {selectedData.language}<br />
+     Description: {selectedData.description}
     </div>
   );
 }
